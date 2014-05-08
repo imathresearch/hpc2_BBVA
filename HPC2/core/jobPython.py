@@ -75,7 +75,8 @@ class JobPython(Job):
                
                 #EXECUTE PROCESS
                 os.chdir(dir_code_execution);
-                subprocess.call([CONS.PYTHONVIRTENV, local_code_to_execute], stdout=outfd, stderr=errfd, shell=False);
+                os.environ["USER_ROOT"] = user_root_dir;
+                subprocess.call([CONS.PYTHONVIRTENV, local_code_to_execute], stdout=outfd, stderr=errfd, env=os.environ, shell=False);
                
                 
                 if os.path.getsize(path_file_out) == 0:
