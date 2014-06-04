@@ -76,6 +76,7 @@ class JobPython(Job):
                 #EXECUTE PROCESS
                 os.chdir(dir_code_execution);
                 os.environ["USER_ROOT"] = user_root_dir;
+                os.environ["COLLECTION_NAME"] = str(self.getIdJob()) + "_" + self.getUserName();
                 subprocess.call([CONS.PYTHONVIRTENV, local_code_to_execute], stdout=outfd, stderr=errfd, env=os.environ, shell=False);
                
                 

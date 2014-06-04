@@ -26,6 +26,11 @@ CONS = CONS()
 class SubmitHandler(tornado.web.RequestHandler):
 
     def get(self):
+        t = multiprocessing.Process(target=self.__asyncSubmitHandler, args=()) 
+        t.deamon = True
+        t.start()
+        
+    def __asyncSubmitHandler(self):
 
         host = self.get_argument("host",None)
         port = self.get_argument("port",None)
