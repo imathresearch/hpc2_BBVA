@@ -103,6 +103,12 @@ class StopJobHandler(tornado.web.RequestHandler):
         if process.is_alive():
             process.terminate()
         
+        listStr = []
+        jsonOut = dict(perc = listStr)
+        self.write(jsonOut)             # According to documentation, RequestHandler.write convert to json the variable structure if it is a dict
+        self.flush()
+        self.finish()
+        
 class PCTHandler(tornado.web.RequestHandler):
     def get(self):
         idJob = self.get_argument("id",None)
