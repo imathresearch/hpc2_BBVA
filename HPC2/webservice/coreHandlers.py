@@ -11,7 +11,9 @@ Authors:
 import tornado.web
 import importlib
 import multiprocessing
+#import HPC2.common.pids as pids
 
+from HPC2.common import pids
 
 from HPC2.core.job import JobInfo
 from HPC2.core.jobPython import JobPython
@@ -26,9 +28,11 @@ CONS = CONS()
 class SubmitHandler(tornado.web.RequestHandler):
 
     def get(self):
+        idJob = self.get_argument("id",None)
         t = multiprocessing.Process(target=self.__asyncSubmitHandler, args=()) 
         t.deamon = True
         t.start()
+        pids.addEntry(idJob, t)     # We store the idJob just in case it needs to be killed
         
     def __asyncSubmitHandler(self):
 
@@ -53,9 +57,11 @@ class SubmitHandler(tornado.web.RequestHandler):
 class PluginHandler(tornado.web.RequestHandler):
     
     def get(self):
+        idJob = self.get_argument("id",None)
         t = multiprocessing.Process(target=self.__asyncPluginHandler, args=()) 
         t.deamon = True
         t.start()
+        pids.addEntry(idJob, t)     # We store the process just in case it needs to be killed
         #return 0
     
     def __asyncPluginHandler(self):
@@ -82,11 +88,26 @@ class PluginHandler(tornado.web.RequestHandler):
         jobController = JobController(job)
         jobController.start()
         
+class StopJobHandler(tornado.web.RequestHandler):
+    def get(self):
+        idJob = self.get_argument("id",None)
+        if idJob==None:
+            self.send_error(500,"idJob Must be informed")
+            return 0
+        
+        process = pids.getProcess(idJob)
+        if process == None:
+            self.send_error(500,"idJob does not exists")
+            return 0
+        
+        if process.is_alive():
+            process.terminate()
+        
 class PCTHandler(tornado.web.RequestHandler):
     def get(self):
         idJob = self.get_argument("id",None)
         if idJob==None:
-            self.send_error(500,"ifJob Must be informed")
+            self.send_error(500,"idJob Must be informed")
             return 0
         
         #print "After if"
