@@ -11,7 +11,7 @@ Authors:
 import tornado.web
 import importlib
 import multiprocessing
-#import HPC2.common.pids as pids
+import os
 
 from HPC2.common import pids
 
@@ -27,12 +27,15 @@ CONS = CONS()
 
 class SubmitHandler(tornado.web.RequestHandler):
 
+       
     def get(self):
         idJob = self.get_argument("id",None)
         t = multiprocessing.Process(target=self.__asyncSubmitHandler, args=()) 
         t.deamon = True
         t.start()
-        pids.addEntry(idJob, t)     # We store the idJob just in case it needs to be killed
+        t.join()
+        pids.addEntry(idJob, t.pid)     # We store the idJob just in case it needs to be killed
+        print "Start Process PID: ", t.pid
         
     def __asyncSubmitHandler(self):
 
@@ -61,7 +64,9 @@ class PluginHandler(tornado.web.RequestHandler):
         t = multiprocessing.Process(target=self.__asyncPluginHandler, args=()) 
         t.deamon = True
         t.start()
-        pids.addEntry(idJob, t)     # We store the process just in case it needs to be killed
+        t.join()
+        pids.addEntry(idJob, t.pid)     # We store the process just in case it needs to be killed
+        print "Start Process PID: ", t.pid
         #return 0
     
     def __asyncPluginHandler(self):
@@ -89,25 +94,32 @@ class PluginHandler(tornado.web.RequestHandler):
         jobController.start()
         
 class StopJobHandler(tornado.web.RequestHandler):
+        
     def get(self):
         idJob = self.get_argument("id",None)
         if idJob==None:
             self.send_error(500,"idJob Must be informed")
             return 0
         
-        process = pids.getProcess(idJob)
-        if process == None:
+        pid = pids.getProcess(idJob)
+        if pid == None:
             self.send_error(500,"idJob does not exists")
             return 0
         
-        if process.is_alive():
-            process.terminate()
+        self.killSystemJob(pid)
         
         listStr = []
         jsonOut = dict(perc = listStr)
         self.write(jsonOut)             # According to documentation, RequestHandler.write convert to json the variable structure if it is a dict
         self.flush()
         self.finish()
+        
+    def killSystemJob(self, pidT):
+        pid = int(pidT) 
+        try:
+            os.kill(pid, -9) 
+        except:
+            pass
         
 class PCTHandler(tornado.web.RequestHandler):
     def get(self):

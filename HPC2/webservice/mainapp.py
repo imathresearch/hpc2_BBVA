@@ -11,6 +11,8 @@ import tornado.ioloop
 import tornado.web
 import multiprocessing
 import time
+import os
+import errno
 
 from HPC2.common import pids
 
@@ -23,19 +25,40 @@ from HPC2.webservice.coreHandlers import StopJobHandler
 This method is executed in an independent process to keep cleaning up the list of processes
 that have terminated
 """
-FREQ_GARBAGE_COLLECTOR = 60 * 15  # 900 seconds; 15 minutes
+FREQ_GARBAGE_COLLECTOR = 60 * 1  # 900 seconds; 1 minute
+
+def pidExists(pidT): 
+    pid = int(pidT)
+    if pid < 0: return False #NOTE: pid == 0 returns True
+    try:
+        os.kill(pid, 0)     # Send signal 0 to the process. If exception process does not exists
+                            # Warning, only works for LInux 
+    except OSError:
+        return False
+    else:
+        return True
+
 def processGarbageCollector():
     while(True):
+        print "Collecting garbage "
         hashmap = pids.getDict()
+        print "Before looping"
+        toDelete = []
         for idJob in hashmap:
-            process = pids.getProcess(idJob)
-            if not process.is_alive():
-                pids.deleteEntry(idJob)
-        
+            pid = hashmap[idJob]
+            print "in looping"
+            if not pidExists(pid):
+                print "Process cleaned: ", pid
+                toDelete += [idJob]
+                
+        for idJob in toDelete:
+            del hashmap[idJob]
+                
+        pids.saveDict(hashmap)
         time.sleep(FREQ_GARBAGE_COLLECTOR)
         
     
-# We initialize the dictionary of JobsIds and PIDs
+# We initialize the dictionary of JobsIds and Processes
 pids.init() 
 
 # We start the process garbage collector
