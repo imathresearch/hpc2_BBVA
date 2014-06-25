@@ -25,7 +25,7 @@ from HPC2.webservice.coreHandlers import StopJobHandler
 This method is executed in an independent process to keep cleaning up the list of processes
 that have terminated
 """
-FREQ_GARBAGE_COLLECTOR = 60 * 1  # 900 seconds; 1 minute
+FREQ_GARBAGE_COLLECTOR = 60 * 15  # 900 seconds; 15 minutes
 
 def pidExists(pidT): 
     pid = int(pidT)
