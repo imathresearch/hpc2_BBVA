@@ -26,16 +26,22 @@ from urlparse import urlparse
 CONS = CONS()
 
 class SubmitHandler(tornado.web.RequestHandler):
-
-       
+    
     def get(self):
         idJob = self.get_argument("id",None)
         t = multiprocessing.Process(target=self.__asyncSubmitHandler, args=()) 
         t.deamon = True
         t.start()
-        #t.join()
         pids.addEntry(idJob, t.pid)     # We store the idJob just in case it needs to be killed
         print "Start Process PID: ", t.pid
+        #pid = os.fork()
+        #if pid == 0:
+        #    #Child
+        #    self.__asyncSubmitHandler()
+        #else:
+        #    print "Start Process PID: ", pid
+        #    pids.addEntry(idJob, pid)    
+        
         
     def __asyncSubmitHandler(self):
 
@@ -53,7 +59,6 @@ class SubmitHandler(tornado.web.RequestHandler):
         job = JobPython(jobInf);
         jobController = JobController(job)
         jobController.start()
-        
         #print "*****FIN DEL JOBCONTROLLER"
         #return 0
 

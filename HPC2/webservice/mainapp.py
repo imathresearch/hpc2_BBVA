@@ -13,6 +13,7 @@ import multiprocessing
 import time
 import os
 import errno
+import psutil
 
 from HPC2.common import pids
 
@@ -48,11 +49,17 @@ def processGarbageCollector():
             pid = hashmap[idJob]
             print "in looping"
             if not pidExists(pid):
-                print "Process cleaned: ", pid
                 toDelete += [idJob]
-                
+            else:
+                proc = psutil.Process(int(pid))
+                print int(pid)
+                if (proc.status == psutil.STATUS_ZOMBIE):
+                    os.kill(int(pid),9)
+                    toDelete += [idJob]
+                    
         for idJob in toDelete:
             del hashmap[idJob]
+            print "Process cleaned: ", pid
                 
         pids.saveDict(hashmap)
         time.sleep(FREQ_GARBAGE_COLLECTOR)
