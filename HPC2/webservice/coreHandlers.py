@@ -33,7 +33,7 @@ class SubmitHandler(tornado.web.RequestHandler):
         t = multiprocessing.Process(target=self.__asyncSubmitHandler, args=()) 
         t.deamon = True
         t.start()
-        t.join()
+        #t.join()
         pids.addEntry(idJob, t.pid)     # We store the idJob just in case it needs to be killed
         print "Start Process PID: ", t.pid
         
@@ -64,7 +64,7 @@ class PluginHandler(tornado.web.RequestHandler):
         t = multiprocessing.Process(target=self.__asyncPluginHandler, args=()) 
         t.deamon = True
         t.start()
-        t.join()
+        #t.join()
         pids.addEntry(idJob, t.pid)     # We store the process just in case it needs to be killed
         print "Start Process PID: ", t.pid
         #return 0
