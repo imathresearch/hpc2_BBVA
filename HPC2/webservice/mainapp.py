@@ -41,13 +41,10 @@ def pidExists(pidT):
 
 def processGarbageCollector():
     while(True):
-        print "Collecting garbage "
         hashmap = pids.getDict()
-        print "Before looping"
         toDelete = []
         for idJob in hashmap:
             pid = hashmap[idJob]
-            print "in looping"
             if not pidExists(pid):
                 toDelete += [idJob]
             else:
@@ -64,7 +61,6 @@ def processGarbageCollector():
         pids.saveDict(hashmap)
         time.sleep(FREQ_GARBAGE_COLLECTOR)
         
-    
 # We initialize the dictionary of JobsIds and Processes
 pids.init() 
 

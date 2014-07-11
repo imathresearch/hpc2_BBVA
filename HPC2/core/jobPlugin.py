@@ -19,6 +19,7 @@ class JobPlugin(Job):
     plugin = None       # The plugin name
     def __init__(self, jobInfo=None):
         super(JobPlugin,self).__init__(jobInfo)
+        
 
     def setPlugin(self, plugin):
         self.plugin = plugin

@@ -21,7 +21,6 @@ from urlparse import urlparse # ammartinez to parse the name of the python file
 from HPC2.common.util.jobUtils import JobUtils
 
 from Colossus.core.constants import CONS        # Colossus constants to retrieve 
-from pwd import getpwnam
 
 CONS=CONS()
 
@@ -41,41 +40,35 @@ class JobPython(Job):
 
     def execute(self):
         
+        old_path = os.getcwd();
+        
+        #1. First the job execution dir is obtained
+        ju = JobUtils()
+        user_root_dir = ju.getUserRootDir(self.getUserName())             
+        job_execution_dir = ju.getJobLocalExecutionDir(self.getIdJob(), self.getUserName())
+       
+        #2. The complete user file system is copied to the job execution dir
+        ju.copyUserDirToJobDir(user_root_dir, job_execution_dir)
+        snp = ju.snapshotDir(user_root_dir)
+        
+        #3. The complete path of job to execute is obtained
+        original_code_to_execute = self.getPathNameSourceFile()       
+        local_code_to_execute = original_code_to_execute.replace(user_root_dir, job_execution_dir)
+        
+        #4. The name of the std file is stablished
+        file_name,file_ext = self.getNameExtSourceFile() #os.path.splitext(os.path.split(self.getSourceFile())[-1])
+        dir_code_execution = os.path.dirname(local_code_to_execute)
+        file_out = str(self.getIdJob()) + "_" + file_name + ".out";
+        file_err = str(self.getIdJob()) + "_" + file_name + ".err";
+        path_file_out = os.path.join(dir_code_execution + '/' + file_out)
+        path_file_err = os.path.join(dir_code_execution + '/' + file_err)
         try:
-            # we get the current uid and gid
-            currentUID = os.geteuid()
-            currentGID = os.getegid()
-            # We get the UID of the use rexecuting the job. Note: Each imath user has its equivalent 
-            uid = getpwnam(self.getUserName())[2]
-            gid = getpwnam(self.getUserName())[3]
-            # We set the current UID to the user for security reasons.   
-            os.seteuid(uid)
-            os.setegid(gid)
-            old_path = os.getcwd();
-            
-            #1. First the job execution dir is obtained
-            ju = JobUtils()
-            user_root_dir = ju.getUserRootDir(self.getUserName())             
-            job_execution_dir = ju.getJobLocalExecutionDir(self.getIdJob(), self.getUserName())
-           
-            #2. The complete user file system is copied to the job execution dir
-            ju.copyUserDirToJobDir(user_root_dir, job_execution_dir)
-            snp = ju.snapshotDir(user_root_dir)
-            
-            #3. The complete path of job to execute is obtained
-            original_code_to_execute = self.getPathNameSourceFile()       
-            local_code_to_execute = original_code_to_execute.replace(user_root_dir, job_execution_dir)
-            
-            #4. The name of the std file is stablished
-            file_name,file_ext = self.getNameExtSourceFile() #os.path.splitext(os.path.split(self.getSourceFile())[-1])
-            dir_code_execution = os.path.dirname(local_code_to_execute)
-            file_out = str(self.getIdJob()) + "_" + file_name + ".out";
-            file_err = str(self.getIdJob()) + "_" + file_name + ".err";
-            path_file_out = os.path.join(dir_code_execution + '/' + file_out)
-            path_file_err = os.path.join(dir_code_execution + '/' + file_err)
-           
             outfd = open( path_file_out, 'w+');
             errfd = open( path_file_err, 'w+');
+        except:
+            raise
+        
+        try:                     
             #5. The job is executed
             if file_ext.lower() == '.py':
               
@@ -130,8 +123,8 @@ class JobPython(Job):
         except:
             raise
         finally:
-            #outfd.close()
-            #errfd.close()
-            os.seteuid(currentUID)
-            os.setegid(currentGID)  
+            outfd.close()
+            errfd.close()
+            #os.seteuid(currentUID)
+            #os.setegid(currentGID)  
         return 1
