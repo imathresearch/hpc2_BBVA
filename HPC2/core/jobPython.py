@@ -40,6 +40,7 @@ class JobPython(Job):
 
     def execute(self):
         
+        self.secureThread();
         old_path = os.getcwd();
         
         #1. First the job execution dir is obtained

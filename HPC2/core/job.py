@@ -41,9 +41,6 @@ class Job(object):
         self.jobInfo = jobInfo
         self.outputFileLists=[]
         self.outputDirList = [] 
-        if secured:
-            self.secureThread()
-        
     
     '''
     Secure the execution by the user 
