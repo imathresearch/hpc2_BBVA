@@ -2,8 +2,8 @@ import os
 from IPython.display import HTML
 
 
-VIDEO_TAG_PARAM = """<video controls>
- <source src="data:video/x-m4v;base64,{0}" type="video/mp4">
+VIDEO_TAG_PARAM = """<video width="640" height="480" controls>
+ <source src="data:video/mp4;base64,{0}" type="video/mp4">
  Your browser does not support the video tag.
 </video>"""
 
