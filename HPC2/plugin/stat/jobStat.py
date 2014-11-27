@@ -74,7 +74,7 @@ class JobStat(JobPlugin):
         super(JobStat,self).__init__(jobInfo)
         
     def execute(self):
-
+        self.secureThread();
         function = self.getFunction()
         #print function
         basicFunc = [self.MEAN, self.FREQ, self.STDEV, self.VAR, self.MAX, self.MIN, self.MODE, self.MEDIAN, self.LINREG]
