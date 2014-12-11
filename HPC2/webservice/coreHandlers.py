@@ -17,11 +17,13 @@ from HPC2.common import pids
 
 from HPC2.core.job import JobInfo
 from HPC2.core.jobPython import JobPython
+from HPC2.core.jobR import JobR
 from HPC2.core.jobController import JobController
 from HPC2.core.jobMonitor import JobMonitor 
 from HPC2.common.constants import CONS
 from HPC2.common.util.jobUtils import JobUtils
 from urlparse import urlparse
+from HPC2.exception.exceptions import HPC2Exception
 
 CONS = CONS()
 
@@ -51,12 +53,21 @@ class SubmitHandler(tornado.web.RequestHandler):
         filenamePath = self.get_argument("fileName",None)
         parameter = self.get_argument("parameter",None)
         directoryPath = self.get_argument("directory",None)
+        jobType = self.get_argument("jobType",None)
         
         ju = JobUtils();
         user = ju.getUserName(urlparse(directoryPath).path);
       
         jobInf = JobInfo(idJob,host, port, filenamePath, directoryPath, parameter, user)
-        job = JobPython(jobInf);
+        
+        if (jobType == "py"):
+            job = JobPython(jobInf);
+        elif (jobType == "r"):
+            job = JobR(jobInf);
+        else:
+            msg = "Unexpected job type: ", "Trying to execute an unrecognised job type"
+            raise HPC2Exception(msg)
+        
         jobController = JobController(job)
         jobController.start()
         #print "*****FIN DEL JOBCONTROLLER"

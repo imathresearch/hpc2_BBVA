@@ -78,7 +78,7 @@ class CONS(object):
         
     @constant #ammartinez
     def RESULTRESPJOBPYTHON():
-        return "/iMathCloud/rest/jobpython_service/python/exec"
+        return "/iMathCloud/rest/joblang_service/resultJob/exec"
     
     @constant
     def SEPARATOR():
@@ -100,5 +100,9 @@ class CONS(object):
     @constant
     def SHAREIMATHCLOUD():
         return "/mount_iMathCloud"
+    
+    @constant
+    def RSCRIPT():
+        return "Rscript"
     
     
