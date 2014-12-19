@@ -18,6 +18,7 @@ from HPC2.common import pids
 from HPC2.core.job import JobInfo
 from HPC2.core.jobPython import JobPython
 from HPC2.core.jobR import JobR
+from HPC2.core.jobOctave import JobOctave
 from HPC2.core.jobController import JobController
 from HPC2.core.jobMonitor import JobMonitor 
 from HPC2.common.constants import CONS
@@ -64,6 +65,8 @@ class SubmitHandler(tornado.web.RequestHandler):
             job = JobPython(jobInf);
         elif (jobType == "r"):
             job = JobR(jobInf);
+        elif (jobType == "m"):
+            job = JobOctave(jobInf);
         else:
             msg = "Unexpected job type: ", "Trying to execute an unrecognised job type"
             raise HPC2Exception(msg)

@@ -13,6 +13,7 @@ from HPC2.common.constants import CONS
 
 from HPC2.core.jobPython import JobPython
 from HPC2.core.jobR import JobR
+from HPC2.core.jobOctave import JobOctave
 from HPC2.core.jobPlugin import JobPlugin
 
 from HPC2.common.util.jobUtils import JobUtils
@@ -51,7 +52,7 @@ class JobController(object):
         portHost = self.getJob().getPort()
         idJob = self.getJob().getIdJob()
         
-        if isinstance(self.getJob(), JobPython) or isinstance(self.getJob(), JobR):
+        if isinstance(self.getJob(), JobPython) or isinstance(self.getJob(), JobR) or isinstance(self.getJob(), JobOctave):
             listOutputFiles = self.getJob().getListOutputFiles()
             jsonString = jsonClass.FilesDirsPlusPathtoJSonString(listOutputFiles, listOutputDirs)
             listResults = jsonClass.JSonStringToJsonDecoder(jsonString)  

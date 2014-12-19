@@ -105,4 +105,8 @@ class CONS(object):
     def RSCRIPT():
         return "Rscript"
     
+    @constant
+    def OCTAVESCRIPT():
+        return "octave"
+    
     
