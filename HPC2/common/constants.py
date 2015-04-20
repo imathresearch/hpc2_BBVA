@@ -47,17 +47,24 @@ class CONS(object):
     It define the global constants for the Colossus core
     
     '''
+    '''
     @constant
     def ROOT_FILE_SYSTEM():
         return "/iMathCloud"
+    '''
     
     @constant
     def LOCALHOST():
         return "127.0.0.1"
     
     @constant
-    def PORT():
-        return 8088
+    def CONFIGFILE():
+        return "/etc/hpc2/hpc2.config/config.properties"
+
+    @constant
+    def HOSTFILE():
+        return "/etc/hpc2/hpc2.config/host_file.txt"
+        
     
     @constant
     def PLUGINNAME():
@@ -84,7 +91,7 @@ class CONS(object):
     def SEPARATOR():
         return "|#|"
     
-     
+    ''' 
     @constant
     def EXECUTION_DIR():
         C = CONS()
@@ -98,9 +105,10 @@ class CONS(object):
         return os.path.join(C.SHAREIMATHCLOUD,path_to_fileclientdata)
     
     @constant
+    #ELIMINAR
     def SHAREIMATHCLOUD():
         return "/mount_iMathCloud"
-    
+    '''
     @constant
     def RSCRIPT():
         return "Rscript"
@@ -109,4 +117,34 @@ class CONS(object):
     def OCTAVESCRIPT():
         return "octave"
     
+    '''
+    @constant
+    def VIRTUALENV_ABS():
+        C = CONS();
+        return os.path.join(C.SHAREIMATHCLOUD, C.VIRTUALENV)
+    
+    @constant
+    def PYTHONVIRTENV():
+        C = CONS()
+        #path_to_pythonenv = "colossus/virt_env/virt1/bin/python"
+        #return os.path.join(C.SHAREIMATHCLOUD, path_to_pythonenv);
+        
+        path_to_pythonenv = "bin/python"
+        return os.path.join(C.VIRTUALENV_ABS, path_to_pythonenv);
+        #return "/iMathCloud/colossus/virt_env/virt1/bin/python"
+        
+    @constant
+    def VIRTUALENV():
+        return "environments/virt2"
+        
+    
+    @constant
+    def SSHCONFIG():
+        return "/home/andrea/.ssh/config"
+        
+    @constant
+    def PATH_TEMP_FILES():
+        C = CONS();
+        return os.path.join(C.SHAREIMATHCLOUD, "temp");
+    '''
     

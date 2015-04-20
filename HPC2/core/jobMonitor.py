@@ -6,9 +6,13 @@ Created on 08/01/2014
 '''
 import paramiko
 import multiprocessing
-from Colossus.core.constants import CONS        # Colossus constants to retrieve 
+from HPC2.common.util.parseProperties import ParseProperties
+
+
+from HPC2.common.constants import CONS 
 
 CONS=CONS()
+prop = ParseProperties()
 
 class JobMonitor(object):
     
@@ -41,7 +45,7 @@ class JobMonitor(object):
     def __getDataHost(self, host):
           # ssh config file
         config = paramiko.SSHConfig()
-        config.parse(open(CONS.SSHCONFIG))
+        config.parse(open(prop.getProperty(ParseProperties.SSH_CONFIG)))
         #print "host " + host
         #print config.lookup(host);
         return config.lookup(host);
@@ -105,7 +109,7 @@ class JobMonitor(object):
         #print "id job " + str(self.idJob)
         #print "num thread " + str(num)
         if self.idJob!=None:
-            name = CONS.PATH_TEMP_FILES + host + "_" + str(self.idJob) + "_" + str(num)
+            name = prop.getProperty(ParseProperties.TEMPORAL_FILES) + host + "_" + str(self.idJob) + "_" + str(num)
             #print name
             
         return name

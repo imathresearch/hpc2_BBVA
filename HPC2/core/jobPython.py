@@ -19,10 +19,13 @@ from HPC2.exception.exceptions import HPC2Exception
 
 from urlparse import urlparse # ammartinez to parse the name of the python file
 from HPC2.common.util.jobUtils import JobUtils
+from HPC2.common.util.parseProperties import ParseProperties
 
-from Colossus.core.constants import CONS        # Colossus constants to retrieve 
+
+from HPC2.common.constants import CONS 
 
 CONS=CONS()
+prop = ParseProperties()
 
 
 class JobPython(Job):
@@ -77,7 +80,10 @@ class JobPython(Job):
                 os.chdir(dir_code_execution);
                 os.environ["USER_ROOT"] = user_root_dir;
                 os.environ["COLLECTION_NAME"] = str(self.getIdJob()) + "_" + self.getUserName();
-                subprocess.call([CONS.PYTHONVIRTENV, local_code_to_execute], stdout=outfd, stderr=errfd, env=os.environ, shell=False);
+                print "-----"
+                print ParseProperties.PYTHON_VIRTUALENV
+                print "---- " + prop.getProperty(ParseProperties.PYTHON_VIRTUALENV)
+                subprocess.call([prop.getProperty(ParseProperties.PYTHON_VIRTUALENV), local_code_to_execute], stdout=outfd, stderr=errfd, env=os.environ, shell=False);
                
                 
                 if os.path.getsize(path_file_out) == 0:

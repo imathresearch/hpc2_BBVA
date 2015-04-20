@@ -12,8 +12,10 @@ import os
 
 from HPC2.common.constants import CONS
 from HPC2.exception.exceptions import HPC2Exception
+from HPC2.common.util.parseProperties import ParseProperties
 
 CONS=CONS()
+prop = ParseProperties()
 
 class JobUtils(object):
     
@@ -24,9 +26,8 @@ class JobUtils(object):
     def getJobLocalExecutionDir(self, idjob, username):
         
         j = 'job' + str(idjob)
-        #return os.path.join(path , j)
-        #return os.path.join(CONS.EXECUTION_DIR(), username, j)
-        return os.path.join(CONS.EXECUTION_DIR, username, j)
+        execution_dir = prop.getProperty(ParseProperties.EXECUTION_DIR)
+        return os.path.join(execution_dir, username, j)
     
     '''
         Return the user root dir of a username
@@ -34,8 +35,8 @@ class JobUtils(object):
     '''
     def getUserRootDir(self, username):
         
-        #return CONS.ROOT_FILE_SYSTEM + "/" + username
-        return os.path.join(CONS.ROOT_FILE_SYSTEM, username)
+        root = prop.getProperty(ParseProperties.ROOT_FILE_SYSTEM)
+        return os.path.join(root, username)
     
     '''
         Return the username of the user associated to a job
@@ -46,10 +47,11 @@ class JobUtils(object):
         try:
           
             #First it is necesary to check that the root system file is contained in the path_from_root
-            check = path_from_root[0:len(CONS.ROOT_FILE_SYSTEM)]
+            root = prop.getProperty(ParseProperties.ROOT_FILE_SYSTEM)            
+            check = path_from_root[0:len(root)]
 
-            if check == CONS.ROOT_FILE_SYSTEM:       
-                relPath = path_from_root[len((CONS.ROOT_FILE_SYSTEM).rstrip('/'))+1:];
+            if check == root:       
+                relPath = path_from_root[len((root).rstrip('/'))+1:];
                 user = relPath.split('/')[0];
                 return user
            

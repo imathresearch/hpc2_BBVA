@@ -4,12 +4,13 @@ Created on Dec 18, 2013
 @author: iMath
 '''
 from Colossus.core.kernel.parallelFile import ParallelFile
-#from Colossus.core.kernel.parallelListPair import ParallelListPairExtended
+from HPC2.common.util.parseProperties import ParseProperties
 from scipy.stats.stats import pearsonr
 from HPC2.common.constants import CONS
 import pickle
 
 CONS = CONS()
+prop = ParseProperties()
 
 '''
 The Colossus class that implements ParallelListPairExtended, to perform ListPair processing considering multile data source
@@ -43,9 +44,8 @@ class ButlerCorrelationParallel(ParallelFile):
         return v1 + v2
      
     def getCommandParameters(self):
-        return [CONS.FILECLIENTDATA]
+        return [prop.getProperty(ParseProperties.FILE_CLIENT_DATA)]
         
     def prepareClientData(self):
         #We save the data for the clients
-        #print CONS.FILECLIENTDATA
-        pickle.dump(self.data, open(CONS.FILECLIENTDATA, "wb" ) )
+        pickle.dump(self.data, open(prop.getProperty(ParseProperties.FILE_CLIENT_DATA), "wb" ) )
