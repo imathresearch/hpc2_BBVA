@@ -56,7 +56,8 @@ class JobController(object):
             listOutputFiles = self.getJob().getListOutputFiles()
             jsonString = jsonClass.FilesDirsPlusPathtoJSonString(listOutputFiles, listOutputDirs)
             listResults = jsonClass.JSonStringToJsonDecoder(jsonString)  
-            url = CONS.HTTP + urlHost + ':' + portHost + CONS.RESULTRESPJOBPYTHON + '/' + idJob + '/'
+            url = "https://" + urlHost + ':' + portHost + CONS.RESULTRESPJOBPYTHON + '/' + idJob + '/'
+            print url
             webService.callWebServiceJSON(url,listResults)  
         
         elif isinstance(self.getJob(), JobPlugin):                       

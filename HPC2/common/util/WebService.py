@@ -12,6 +12,11 @@ class WebServiceClass:
 		pyCurlClass.setopt(pycurl.USERPWD, 'WSUser:943793072')
 		#pyCurlClass.setopt(pycurl.USERPWD, 'ammartinez:h1i1m1')
 		#print "ExecuteWebService after setopt 2"
+		
+		# Not ssl check
+		pyCurlClass.setopt(pycurl.SSL_VERIFYPEER, 0) 
+		pyCurlClass.setopt(pycurl.SSL_VERIFYHOST, 0)
+		
 		pyCurlClass.perform()
 		print "End executeWebService"	
 
